@@ -1,0 +1,41 @@
+DBscan:-
+	dencity based special clustring of application with noice
+
+	dbscan is a clustring algoritham that groups together points that are close to each other and marks points that doesnot belong to any
+	group as outliers
+
+How does dbscan works:-
+
+	dbscal release on two main ideas
+	
+	1. dencity
+	2. connectivity
+
+1. dencity: 
+	A reason is consider dence if it has many points nearby 
+2. connectiity:
+	A cluster is formed by connecting points in high dencity regions
+
+Dbscan uses two parameters:
+	1. epsilone : The reaius to search for neighboring points
+	2. min points : The minimum number of points required to form a dence cluster
+
+Steps of DBscan algorithm:
+	1. Pick a random point from a dataset
+	2 how many points are distint within epsilon distance (neighbours)
+
+1. if the number of neighbours greater than or equal to minimum points then this point is a core pointit starts a cluster 
+2. if the number of cluster is less than minimum points than this point is marked as noice ( it might leter become part of another cluster)
+
+Expand the cluster by adding old dencity reachable points and than repeat for all points in the dataset.Then it separates those points that do not belong to any cluster remain as noice 
+
+
+
+
+
+
+
+
+
+
+
