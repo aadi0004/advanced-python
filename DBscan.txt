@@ -7,6 +7,8 @@ DBscan:-
 
 How does dbscan works:-
 
+
+
 	dbscal release on two main ideas
 	
 	1. dencity
