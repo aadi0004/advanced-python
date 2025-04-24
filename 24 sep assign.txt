@@ -1,0 +1,181 @@
+1 :one 
+2 :two
+3 :three
+4 :four 
+5 :five 
+
+input is not matched 
+---------------------------------------------------------------------
+a :apple 
+b :ball
+c :cat
+d :dog 
+
+input is not matched 
+---------------------------------------------------------------------
+a :
+	two number input 
+	addition 
+
+m :
+	two number input 
+	multiplication 
+
+s :
+	two number input 
+	substraction 
+
+d :
+	two number input 
+	divide 
+---------------------------------------------------------------------
+input a number and check
+	 number is divisible 2 :divide by 2
+	 number is divisible 5 :divide by 5 
+	 number is divisible 8 :dividie by 8 
+
+---------------------------------------------------------------------
+two number maximum 
+	a input number 
+	b input number 
+	check which one is maximum 
+---------------------------------------------------------------------
+three number maximum 
+	a input number 
+	b input number 
+	c input number 
+	which one maximum 
+---------------------------------------------------------------------
+lines :
+upper line 
+mid line 
+lower line 
+---------------------------------------------------------------------
+
+C program to convert temperature from Fahrenheit to Celsius and Celsius to Fahrenheit
+celsius 
+f---->c 
+fahrenheit
+c---f 
+
+---------------------------------------------------------------------
+C program to enter student marks and find percentage and grade
+A college has the following rules for the grading system:
+5 marks (grade + %)
+1. Below 25 – F
+2. 25 to 45 – E
+3. 45 to 50 – D
+4. 50 to 60 – C
+5. 60 to 80 – B 
+6. Above 80 – A
+---------------------------------------------------------------------
+Write a C program to read the roll no, name,fnname and marks of three subjects and calculate the total, percentage and division.
+Test Data :
+Input the Roll Number of the student :784
+student name : 
+fname:
+mname:
+address:
+contact:
+Input the marks of Physics, Chemistry and Computer Application : 70 80 90
+total: 
+precentage : % 
+division:
+---------------------------------------------------------------------
+salalry :
+holidays (1) =full salary 
+2-5 =5% 
+5-14 =10% 
+15 =50% 
+else =not salary 
+
+output : 
+name:
+address: 
+bank details: 
+salary : 
+alot :
+ holidays 
+
+---------------------------------------------------------------------
+electric city bill : 
+4 unit 
+40 
+1- 10 = 10% 
+11-20 =15% 
+21-40 =30% 
+50 =50% 
+
+output : 
+name:
+unit :3 
+amout 30 
+discout : 10% 
+total pay amount : 
+-------------------------------------------------------
+ BMI Calculator
+Create a program that calculates the Body Mass Index (BMI) based on a person's weight and height. Categorize the BMI using the following ranges:
+
+BMI < 18.5: Underweight
+18.5 <= BMI < 24.9: Normal weight
+25 <= BMI < 29.9: Overweight
+BMI >= 30: Obesity
+----------------------------------------------------------
+Time of Day Greeting
+Create a program that asks for the time of day (morning, afternoon, evening) and then greets the user accordingly. For example, "Good morning!" if the time is morning.
+-----------------------------------------------
+Ticket Booking System
+Design a ticket booking system for a cinema that calculates the ticket price based on the age of the customer. Children (age < 12) get a 50% discount, while seniors (age >= 65) get a 30% discount
+
+-----------------------------------------------
+XYZ Technologies is in the process of increment the salary of the employees. This
+increment is done based on their salary and their performance appraisal rating.
+If the appraisal rating is between 1 and 3, the increment is 10% of the salary.
+If the appraisal rating is between 3.1 and 4, the increment is 25% of the salary.
+If the appraisal rating is between 4.1 and 5, the increment is 30% of the salary.
+Help them to do this, by writing a program that displays the incremented salary. Write a
+class “IncrementCalculation.java” and write the main method in it.
+Note : If either the salary is 0 or negative (or) if the appraisal rating is not in the range 1 to
+5 (inclusive), then the output should be “Invalid Input”.
+Sample Input 1 :
+Enter the salary
+8000
+Enter the Performance appraisal rating
+3
+Sample Output 1 :
+8800
+Sample Input 2 :
+Enter the salary
+7500
+Enter the Performance appraisal rating
+4.3
+Sample Output 2 :
+9750
+Sample Input 3 :
+Enter the salary
+-5000
+Enter the Performance appraisal rating
+6
+Sample Output 3 :
+Invalid Input
+--------------------------------------------------------------------
+Write a C program that calculates income tax for individuals based on the following criteria:
+
+Income <= 10,000: No tax
+10,001 - 30,000: 10% tax
+30,001 - 50,000: 20% tax
+Income > 50,000: 30% tax
+
+--------------------------------------------------------------------
+
+
+
+ 
+
+
+
+
+
+
+
+
