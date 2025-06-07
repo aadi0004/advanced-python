@@ -1,0 +1,358 @@
+{
+  "name": "jobs",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        220
+      ],
+      "id": "d4e59847-8111-4547-87c5-48dc9eb83bcf",
+      "name": "When chat message received",
+      "webhookId": "5c60f507-dcc8-4f77-b163-11617d5bcc71"
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/customsearch/v1?[parameters]",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "AIzaSyAEO1Ij6YvtME4FzJrFRTOOsvVCrvXDdFQ"
+            },
+            {
+              "name": "cx",
+              "value": "3122fc597eecf4cd5"
+            },
+            {
+              "name": "q",
+              "value": "=site:linkedin.com/jobs/view \"Data Scientist\" India (\"Entry Level\" OR \"Fresher\" OR \"0-1 years\" OR \"Internship\" and start={{ $json.currentStartindex }})"
+            },
+            {
+              "name": "start",
+              "value": "={{ $runIndex == 0 ? ($node[\"Set Field\"].json.currentStartIndex || 1) : ($node[\"Pagination Check\"].json.startIndex || 1) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1640,
+        220
+      ],
+      "id": "2106e8f7-d17a-41e8-82fe-b2136b291399",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2080,
+        220
+      ],
+      "id": "dd1320a1-bf4f-4d92-bea4-8df85e583d2f",
+      "name": "Wait",
+      "webhookId": "1748a5bf-099c-46b3-b13e-f930cb1705f9"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-7Xa2CwOhGEM6XCKkf7TI7s3s5ANcK_-ULUc7VOo0Ak",
+          "mode": "list",
+          "cachedResultName": "jobs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-7Xa2CwOhGEM6XCKkf7TI7s3s5ANcK_-ULUc7VOo0Ak/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-7Xa2CwOhGEM6XCKkf7TI7s3s5ANcK_-ULUc7VOo0Ak/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company name": "={{ $json.title }}",
+            "url": "={{ $json.link }}",
+            "job oportunity": "={{ $json.snippet }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "company name",
+              "displayName": "company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "job oportunity",
+              "displayName": "job oportunity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2300,
+        220
+      ],
+      "id": "1816b87b-e835-43b3-a5c4-76a16c492b5e",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BTnJx52zSibsiuwM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Default values\nlet nextStartIndex = 1;\nlet hasMoreResults = false;\nconst resultsPerPage = 10; // Or however many items per API call\n\n// Get input from \"Extract result\" node\nconst previousNodeData = $node[\"Extract result\"].json;  \nconsole.log(\"Extract result Node Data:\", JSON.stringify(previousNodeData, null, 2));\n\n// Check if data exists\nif (previousNodeData) {\n    // Extract previous start index\n    const currentIndex = parseInt(previousNodeData.startIndex ?? previousNodeData.index ?? 1);\n    \n    // INCREMENT the index for the next page\n    nextStartIndex = currentIndex + resultsPerPage;\n    console.log(\"Next Start Index:\", nextStartIndex);\n\n    // Normalize hasMoreResults\n    if (previousNodeData.hasMoreResults !== undefined) {\n        hasMoreResults = previousNodeData.hasMoreResults === true || previousNodeData.hasMoreResults === \"true\";\n    } else if (previousNodeData.results !== undefined) {\n        hasMoreResults = Boolean(previousNodeData.results);\n    }\n\n    console.log(\"Has More Results:\", hasMoreResults);\n}\n\n// Output for the next node\nreturn [\n    {\n        json: {\n            continueLoop: hasMoreResults,\n            startIndex: nextStartIndex\n        }\n    }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2740,
+        220
+      ],
+      "id": "588088d7-b219-4654-be8f-510acac63ec5",
+      "name": "Pagination"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "65a57f85-7e71-4a40-ad93-f8eda7e83073",
+              "leftValue": "={{ $json.continueLoop }}",
+              "rightValue": "={{ $json.maxPages * 5 }} ",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": "",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2920,
+        220
+      ],
+      "id": "4f8ee24f-00d8-4c97-915a-477edfc8e6e0",
+      "name": "Pagination Check"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3d7d6bd8-1646-4e8c-85ec-4a9fd1eae461",
+              "name": "currentStartindex",
+              "value": 1,
+              "type": "number"
+            },
+            {
+              "id": "ee7bc459-7471-45fc-970a-c950edf79298",
+              "name": "maxPages",
+              "value": 5,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1420,
+        220
+      ],
+      "id": "8231167a-fcab-4ff4-a4a1-9e1dc950324c",
+      "name": "Set Field"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ensure response data exists\nconst response = $json || {};  \nconst items = response.items || [];  \n\n// Initialize pagination index\nlet nextStartIndex = 0;\nif (response.queries && response.queries.nextPage) {\n    nextStartIndex = response.queries.nextPage[0]?.startIndex || 0;\n}\n\n// Limit to avoid excessive requests (e.g., only scrape up to 100 results)\nconst hasMoreResults = nextStartIndex > 0 && nextStartIndex < 100;\n\n// Process each item in the search results\nconst results = items.map(item => ({\n    title: item.title || \"\",  \n    link: item.link || \"\",  \n    snippet: item.snippet || \"\",\n    image: item.pagemap?.cse_thumbnail?.[0]?.src || null,  \n    startIndex: nextStartIndex,  \n    hasMoreResults: hasMoreResults  \n}));\n\n// Return extracted data\nreturn results;\n// If no results, return at least one item with pagination info\nif (results.length === 0) {\n    return [{\n        title: null,\n        link: null,\n        snippet: null,\n        image: null,\n        startIndex: nextStartIndex,\n        hasMoreResults: false\n    }];\n}\n\n// Return processed results\nreturn results.map(r => ({ json: r }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1860,
+        220
+      ],
+      "id": "e94ac3ff-435e-4536-93f0-3198b39932a8",
+      "name": "Extract result"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2520,
+        220
+      ],
+      "id": "c4bb039e-a307-4cdf-80a2-f136dff6b988",
+      "name": "Wait1",
+      "webhookId": "a0811f6b-aaff-4568-9e15-fdbd45f66134"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Set Field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Pagination",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pagination": {
+      "main": [
+        [
+          {
+            "node": "Pagination Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pagination Check": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Field": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract result": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "38c6eb1c-d64e-4e38-9970-3590cb84648c",
+  "meta": {
+    "instanceId": "f4ae1adf5c7f727fb03a38efe5f4385df0b0222ef89fd2bda5f5a96c9f6a117f"
+  },
+  "id": "FyvuXYYNWJiQ3FRl",
+  "tags": []
+}

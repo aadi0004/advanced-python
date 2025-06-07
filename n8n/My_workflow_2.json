@@ -1,0 +1,299 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "name": "Split Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [
+        600,
+        0
+      ],
+      "id": "e81315e9-3188-4c95-bbb4-6b39809e5538"
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"url\"]}}",
+        "responseFormat": "string",
+        "options": {}
+      },
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        800,
+        0
+      ],
+      "id": "b7e1e860-f2a7-42b8-acfb-0b2515e84a56"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Retrieve HTML from the HTTP Request node's output.\n// Using \"data\" because the HTTP response JSON has the HTML under \"data\"\nconst html = $json[\"data\"];\n\nif (!html) {\n  return [{\n    job_url: $json[\"url\"] || \"No URL\",\n    hr_name: \"Not Found\",\n    contact_details: \"Not Found\",\n    debug: \"No HTML received\"\n  }];\n}\n\n// Marker text as seen in the page\nconst marker = \"Meet the hiring team\";\nconst markerIndex = html.indexOf(marker);\n\nif (markerIndex === -1) {\n  return [{\n    job_url: $json[\"url\"],\n    hr_name: \"Not Found\",\n    contact_details: \"Not Found\",\n    debug: \"Marker not found\"\n  }];\n}\n\n// Extract the snippet starting right after the marker\nconst snippet = html.substring(markerIndex + marker.length);\n\n// Split the snippet by newlines, trim spaces, and filter out empty lines\nconst lines = snippet.split(\"\\n\").map(line => line.trim()).filter(line => line !== \"\");\n\nif (lines.length === 0) {\n  return [{\n    job_url: $json[\"url\"],\n    hr_name: \"Not Found\",\n    contact_details: \"Not Found\",\n    debug: \"No content after marker\"\n  }];\n}\n\n// Assume the first non-empty line is the HR name\nconst hrName = lines[0];\n\n// Look for \"Job poster\" in the subsequent lines to mark the end of contact details\nlet endIndex = lines.findIndex((line, idx) => idx > 0 && line.includes(\"Job poster\"));\nif (endIndex === -1) {\n  endIndex = lines.length;\n}\n\n// Concatenate the remaining lines (after the HR name) as the contact details\nconst contactDetails = lines.slice(1, endIndex).join(\" \") || \"Not Found\";\n\nreturn [{\n  job_url: $json[\"url\"],\n  hr_name: hrName,\n  contact_details: contactDetails,\n  debug: `Extracted ${lines.length} lines after marker`\n}];\n"
+      },
+      "name": "Extract HR Details",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        0
+      ],
+      "id": "ea3911a4-8ee6-4446-8051-08bdb890fcea"
+    },
+    {
+      "parameters": {},
+      "name": "Merge Results",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "dbc302fe-4c08-434b-a73e-75dbaf816e93"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1-7Xa2CwOhGEM6XCKkf7TI7s3s5ANcK_-ULUc7VOo0Ak",
+          "mode": "list",
+          "cachedResultName": "jobs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-7Xa2CwOhGEM6XCKkf7TI7s3s5ANcK_-ULUc7VOo0Ak/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-7Xa2CwOhGEM6XCKkf7TI7s3s5ANcK_-ULUc7VOo0Ak/edit#gid=0"
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        340,
+        20
+      ],
+      "id": "84498915-5343-48ac-a07a-b53a7af2ca55",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BTnJx52zSibsiuwM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1R37C41oepuxAAbRrvT-x26cHVXGtWPJvTT1jWWLxwTI",
+          "mode": "list",
+          "cachedResultName": "new",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R37C41oepuxAAbRrvT-x26cHVXGtWPJvTT1jWWLxwTI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1R37C41oepuxAAbRrvT-x26cHVXGtWPJvTT1jWWLxwTI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "job_url": "={{ $json.job_url }}",
+            "hr_name": "={{ $json.hr_name }}",
+            "contact_details": "={{ $json.contact_details }}"
+          },
+          "matchingColumns": [
+            "job_url"
+          ],
+          "schema": [
+            {
+              "id": "job_url",
+              "displayName": "job_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hr_name",
+              "displayName": "hr_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "contact_details",
+              "displayName": "contact_details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1420,
+        0
+      ],
+      "id": "94b24b86-0be1-41c9-9684-be5a33f3dc05",
+      "name": "Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BTnJx52zSibsiuwM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1640,
+        0
+      ],
+      "id": "6a47200c-7b29-4f59-ab6c-83d3a53f297b",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3fe2c02a-aecb-42f3-ad39-355995a26b4c",
+      "name": "When chat message received",
+      "webhookId": "f4e4ea87-cd38-4d45-9742-c24e12cd4454"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Split Items": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract HR Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract HR Details": {
+      "main": [
+        [
+          {
+            "node": "Merge Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Split Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Results": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "49eb2789-bf41-4d0b-8373-0609e1f00dc2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f4ae1adf5c7f727fb03a38efe5f4385df0b0222ef89fd2bda5f5a96c9f6a117f"
+  },
+  "id": "ZTgtn8DdujCbR7P5",
+  "tags": []
+}
